@@ -6,6 +6,8 @@ var filter;
 var xmouse = 384;
 var ymouse = 206;
 
+var projectButton;
+
 
 // Image of Husky Creative commons from Wikipedia:
 // https://en.wikipedia.org/wiki/Dog#/media/File:Siberian_Husky_pho.jpg
@@ -21,28 +23,37 @@ var matrix = [
     [1/64, 1/64, 1/64, 1/64, 1/64, 1/64, 1/64, 1/64]
 ];
 /////////////////////////////////////////////////////////////////
+//preloads the image to memory for faster initilisation
 function preload() {
     imgIn = loadImage("assets/husky.jpg");
 }
 /////////////////////////////////////////////////////////////////
 function setup() {
     createCanvas((imgIn.width * 2), imgIn.height+150);
+    //initilises the instructions upon page load
     instructionMenu();
+    //initilises the earlybird filter upon page load
     filter = earlyBirdFilter(imgIn);
     keyCode = 32; 
+    projectButton = createButton("Project Page");
+    projectButton.position(width/2+150, height-50);
+    projectButton.mouseClicked(toProject);
 }
 /////////////////////////////////////////////////////////////////
 function draw() {
     background(255);
-    
+    //draws the instructions to the canvas
     image(instructionMenu(), width/4,height-150);
-    
+    //draws the origional image
     image(imgIn, 0, 0);
-
+    //draws the filtered image 
     image(filter, imgIn.width, 0);
+    //prevents the draw loop from being constantly called as the 
+    //filter process is computationally expensive and would run continuously
     noLoop();
 }
 /////////////////////////////////////////////////////////////////
+//positions the radial blur effect based off the mouse click position on the origional image
 function mousePressed()
 {
   if(mouseX <= imgIn.width && mouseX >= 0 && mouseY <= imgIn.height && mouseY >= 0)
@@ -75,7 +86,7 @@ function instructionMenu()
 {
   var instruction = createGraphics(imgIn.width, 150);
   instruction.background(255);
-  instruction.fill(125);
+  instruction.fill(0);
   instruction.stroke(0,255,0);
   instruction.rect(0,0,instruction.width,instruction.height,20);
   instruction.fill(255);
@@ -83,12 +94,15 @@ function instructionMenu()
   instruction.textSize(15);
   instruction.text("Welcome to the Instagram Filter app",10,20);
   instruction.text("Button Controls:\n Spacebar = Earlybird Filter\n C = Sepia Filter\n V = Dark Courners filter\n B = Radial Blur Filter\n N = Border Filter",10,45);
-  instruction.text("Note:\nWhen using the Radial Blur Filter or Earlybird Filter,\nclick the section on the origional color image you want shown \nas the focal point.",300,50);
+  instruction.text("Note:\nWhen using the Radial Blur Filter or Earlybird Filter,\nclick the section on the origional color image you want shown \nas the focal point.",300,20);
+  instruction.text("Supporting Documentation  ==>",300,115);
+  
 
   return instruction;
 }
 
 /////////////////////////////////////////////////////////////////
+//calls the series of filters that create the earlyBird effect takes in the origion image and otputs a new version 
 function earlyBirdFilter(img){
   var resultImg = createImage(img.width, img.height);
   resultImg = sepiaFilter(img);
@@ -99,6 +113,7 @@ function earlyBirdFilter(img){
 }
 
 /////////////////////////////////////////////////////////////////
+//takes in the origional image and outputs a new version with the sepia effect
 function sepiaFilter(img)
 {
   var imgOut = createImage(img.width, img.height)
@@ -130,6 +145,7 @@ function sepiaFilter(img)
 }
 
 /////////////////////////////////////////////////////////////////
+//takes in the origional image and outputs a new version with the cournes of the image darkened
 function darkCorners(img)
 {
   var dynLum;
@@ -185,6 +201,8 @@ function darkCorners(img)
 }
 
 /////////////////////////////////////////////////////////////////
+//takes in the origional image and outputs a new version with the radial blur effect
+//radial blur is applied by applying the convolution matrix
 function radialBlurFilter(img)
 {
     var imgOut = createImage(img.width, img.height)
@@ -227,6 +245,7 @@ function radialBlurFilter(img)
 }
 
 /////////////////////////////////////////////////////////////////
+//applies the convolution matrix to the image pixels
 function convolution(x, y, matrix, matrixSize, img)
 {
     var totalRed = 0;
@@ -256,6 +275,7 @@ function convolution(x, y, matrix, matrixSize, img)
 }
 
 /////////////////////////////////////////////////////////////////
+// takes in the origional image, outputs a new image with the border applied
 function borderFilter(img)
 {
   var buffer = createGraphics(img.width, img.height);
@@ -267,4 +287,10 @@ function borderFilter(img)
   buffer.rect(0+10,0+10,buffer.width-20,buffer.height-20);
 
   return buffer;
+}
+/////////////////////////////////////////////////////////////////
+//navigates to the page with supporting documentation
+function toProject()
+{
+  location.href="https://cerrmor.github.io/project_pages/instagramFilter.html";
 }
