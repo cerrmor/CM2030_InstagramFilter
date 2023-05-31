@@ -35,8 +35,11 @@ function setup() {
     //initilises the earlybird filter upon page load
     filter = earlyBirdFilter(imgIn);
     keyCode = 32; 
-    projectButton = createButton("Project Page");
-    projectButton.position(width/2+150, height-50);
+    
+    //initilises the button that redirects the user to the supporting documentation page
+    projectButton = createButton("Click Me!");
+    projectButton.position(width/2+150, height-55);
+    projectButton.size(100,35);
     projectButton.mouseClicked(toProject);
 }
 /////////////////////////////////////////////////////////////////
